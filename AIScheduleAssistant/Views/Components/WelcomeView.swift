@@ -12,65 +12,96 @@ struct WelcomeView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "calendar.badge.plus")
-                .font(.system(size: 60))
-                .foregroundColor(.blue)
+        VStack(spacing: 28) {
+            // Icon and title
+            VStack(spacing: 16) {
+                Image(systemName: "figure.pool.swim")
+                    .font(.system(size: 72))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [
+                                DesignSystem.Colors.primaryCoral,
+                                DesignSystem.Colors.accentWater
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
 
-            Text("欢迎使用 AI Schedule Assistant")
-                .font(.title)
-                .fontWeight(.bold)
+                VStack(spacing: 8) {
+                    Text("欢迎来到温泉旅馆 🌿")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundColor(DesignSystem.Colors.textPrimary)
 
-            Text("在开始使用之前，我们需要获取一些系统权限")
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-
-            VStack(alignment: .leading, spacing: 16) {
-                PermissionItem(
-                    icon: "camera.fill",
-                    title: "屏幕录制",
-                    description: "用于截图功能",
-                    status: permissionManager.screenRecordingStatus
-                )
-
-                PermissionItem(
-                    icon: "calendar",
-                    title: "日历",
-                    description: "用于创建日历事件",
-                    status: permissionManager.calendarStatus
-                )
-
-                PermissionItem(
-                    icon: "checklist",
-                    title: "提醒事项",
-                    description: "用于创建待办事项",
-                    status: permissionManager.remindersStatus
-                )
-            }
-            .padding()
-            .background(Color.gray.opacity(0.1))
-            .cornerRadius(10)
-
-            VStack(spacing: 12) {
-                Button("请求权限") {
-                    requestPermissions()
+                    Text("让 AI 水豚帮你整理日程")
+                        .font(.system(size: 16))
+                        .foregroundColor(DesignSystem.Colors.textSecondary)
                 }
-                .buttonStyle(.borderedProminent)
+            }
+
+            // Permission list card
+            VStack(alignment: .leading, spacing: 20) {
+                Text("在开始之前，需要一些小小的准备：")
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundColor(DesignSystem.Colors.textPrimary)
+
+                VStack(spacing: 16) {
+                    PermissionItem(
+                        icon: "camera.fill",
+                        title: "屏幕录制",
+                        description: "用于截图功能",
+                        status: permissionManager.screenRecordingStatus
+                    )
+
+                    DividerCapybara()
+
+                    PermissionItem(
+                        icon: "calendar",
+                        title: "日历",
+                        description: "用于创建日历事件",
+                        status: permissionManager.calendarStatus
+                    )
+
+                    DividerCapybara()
+
+                    PermissionItem(
+                        icon: "checklist",
+                        title: "提醒事项",
+                        description: "用于创建待办事项",
+                        status: permissionManager.remindersStatus
+                    )
+                }
+            }
+            .padding(24)
+            .floatingCard(shadowColor: DesignSystem.Colors.shadowWarm)
+
+            // Action buttons
+            VStack(spacing: 14) {
+                Button {
+                    requestPermissions()
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "flame.fill")
+                        Text("开始准备权限")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(CapybaraPrimaryButtonStyle())
                 .controlSize(.large)
 
                 Button("稍后设置") {
                     dismiss()
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(CapybaraSecondaryButtonStyle())
             }
 
             Text("您可以随时在设置中管理这些权限")
-                .font(.caption)
-                .foregroundColor(.secondary)
+                .font(.system(size: 12))
+                .foregroundColor(DesignSystem.Colors.textTertiary)
         }
-        .padding(40)
-        .frame(width: 500)
+        .padding(48)
+        .frame(width: 560)
+        .background(DesignSystem.Colors.backgroundWarm)
     }
 
     private func requestPermissions() {
@@ -113,27 +144,37 @@ struct PermissionItem: View {
     let status: PermissionStatus
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 16) {
             Image(systemName: icon)
-                .font(.title3)
-                .foregroundColor(.blue)
-                .frame(width: 30)
+                .font(.system(size: 24))
+                .foregroundColor(statusColor)
+                .frame(width: 36)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.headline)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(DesignSystem.Colors.textPrimary)
                 Text(description)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .font(.system(size: 13))
+                    .foregroundColor(DesignSystem.Colors.textSecondary)
             }
 
             Spacer()
 
             if status == .granted {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(.green)
+                    .font(.system(size: 24))
+                    .foregroundColor(DesignSystem.Colors.successGreen)
+            } else {
+                Image(systemName: "circle")
+                    .font(.system(size: 24))
+                    .foregroundColor(DesignSystem.Colors.textTertiary.opacity(0.3))
             }
         }
+    }
+
+    private var statusColor: Color {
+        status == .granted ? DesignSystem.Colors.successGreen : DesignSystem.Colors.textSecondary
     }
 }
 

@@ -18,10 +18,20 @@ struct PreviewWindow: View {
     var body: some View {
         VStack(spacing: 0) {
             // Header
-            HStack {
-                Text("AI 识别结果")
-                    .font(.title2)
-                    .fontWeight(.semibold)
+            HStack(spacing: 12) {
+                Image(systemName: "leaf.fill")
+                    .font(.system(size: 28))
+                    .foregroundColor(DesignSystem.Colors.successGreen)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("AI 为你整理好了这些日程")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(DesignSystem.Colors.textPrimary)
+
+                    Text("像荷叶一样清晰明了")
+                        .font(.system(size: 13))
+                        .foregroundColor(DesignSystem.Colors.textSecondary)
+                }
 
                 Spacer()
 
@@ -29,70 +39,89 @@ struct PreviewWindow: View {
                     dismiss()
                 } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.secondary)
+                        .font(.system(size: 24))
+                        .foregroundColor(DesignSystem.Colors.textTertiary)
                 }
                 .buttonStyle(.plain)
             }
-            .padding()
+            .padding(24)
+            .background(DesignSystem.Colors.backgroundWarm)
 
-            Divider()
+            DividerCapybara()
 
             // Events List
             ScrollView {
-                VStack(spacing: 12) {
+                VStack(spacing: 16) {
                     ForEach(Array(events.enumerated()), id: \.offset) { index, event in
                         EventPreviewCard(
                             event: event,
                             isSelected: selectedEventIndices.contains(index),
                             onToggle: {
-                                if selectedEventIndices.contains(index) {
-                                    selectedEventIndices.remove(index)
-                                } else {
-                                    selectedEventIndices.insert(index)
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    if selectedEventIndices.contains(index) {
+                                        selectedEventIndices.remove(index)
+                                    } else {
+                                        selectedEventIndices.insert(index)
+                                    }
                                 }
                             }
                         )
                     }
                 }
-                .padding()
+                .padding(24)
             }
+            .background(DesignSystem.Colors.backgroundWarm.opacity(0.5))
 
-            Divider()
+            DividerCapybara()
 
             // Footer
-            HStack {
+            HStack(spacing: 16) {
                 Button(allSelected ? "全不选" : "全选") {
-                    if allSelected {
-                        selectedEventIndices.removeAll()
-                    } else {
-                        selectedEventIndices = Set(events.indices)
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        if allSelected {
+                            selectedEventIndices.removeAll()
+                        } else {
+                            selectedEventIndices = Set(events.indices)
+                        }
                     }
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(CapybaraSecondaryButtonStyle())
 
                 Spacer()
 
-                Text("\(selectedEventIndices.count) / \(events.count) 个事件已选择")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                HStack(spacing: 6) {
+                    Text("\(selectedEventIndices.count)")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(DesignSystem.Colors.primaryCoral)
+                    Text("/ \(events.count) 个事件已选择")
+                        .font(.system(size: 14))
+                        .foregroundColor(DesignSystem.Colors.textSecondary)
+                }
 
                 Spacer()
 
                 Button("取消") {
                     dismiss()
                 }
+                .buttonStyle(CapybaraSecondaryButtonStyle())
 
-                Button("添加到日历和待办") {
+                Button {
                     let selectedEvents = selectedEventIndices.map { events[$0] }
                     Task {
                         await viewModel.createSelectedEvents(selectedEvents)
                         dismiss()
                     }
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "leaf.fill")
+                        Text("添加到日历")
+                    }
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(CapybaraPrimaryButtonStyle())
                 .disabled(selectedEventIndices.isEmpty)
             }
-            .padding()
+            .padding(24)
+            .background(DesignSystem.Colors.backgroundWarm)
         }
         .onAppear {
             // Select all events by default
@@ -111,66 +140,96 @@ struct EventPreviewCard: View {
     let onToggle: () -> Void
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            // Checkbox
-            Button {
-                onToggle()
-            } label: {
+        Button(action: onToggle) {
+            HStack(alignment: .top, spacing: 16) {
+                // Checkbox
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundColor(isSelected ? .blue : .secondary)
-            }
-            .buttonStyle(.plain)
+                    .font(.system(size: 28))
+                    .foregroundColor(isSelected ? DesignSystem.Colors.successGreen : DesignSystem.Colors.textTertiary.opacity(0.4))
 
-            VStack(alignment: .leading, spacing: 8) {
-                // Title
-                Text(event.title)
-                    .font(.headline)
+                VStack(alignment: .leading, spacing: 12) {
+                    // Title
+                    Text(event.title)
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(DesignSystem.Colors.textPrimary)
+                        .multilineTextAlignment(.leading)
 
-                // Description
-                if let description = event.description {
-                    Text(description)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
+                    // Description
+                    if let description = event.description {
+                        Text(description)
+                            .font(.system(size: 14))
+                            .foregroundColor(DesignSystem.Colors.textSecondary)
+                            .multilineTextAlignment(.leading)
+                    }
 
-                // Date and Time
-                HStack(spacing: 16) {
-                    Label(formatDate(event.startDate), systemImage: "calendar")
-                    Label(formatTime(event.startDate), systemImage: "clock")
-                }
-                .font(.caption)
-                .foregroundColor(.secondary)
+                    // Date and Time
+                    HStack(spacing: 20) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "calendar")
+                                .font(.system(size: 13))
+                            Text(formatDate(event.startDate))
+                                .font(.system(size: 13))
+                        }
+                        .foregroundColor(DesignSystem.Colors.textSecondary)
 
-                // Categories
-                HStack(spacing: 8) {
-                    CategoryBadge(icon: "calendar", text: event.suggestedCalendar)
-                    CategoryBadge(icon: "checklist", text: event.suggestedReminderList)
-                }
+                        HStack(spacing: 6) {
+                            Image(systemName: "clock")
+                                .font(.system(size: 13))
+                            Text(formatTime(event.startDate))
+                                .font(.system(size: 13))
+                        }
+                        .foregroundColor(DesignSystem.Colors.textSecondary)
+                    }
 
-                // Confidence
-                if event.confidence < 0.8 {
-                    HStack {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundColor(.orange)
-                        Text("识别置信度较低，请检查信息是否准确")
-                            .font(.caption)
-                            .foregroundColor(.orange)
+                    // Categories
+                    HStack(spacing: 10) {
+                        BadgeCapybara(
+                            icon: "calendar",
+                            text: event.suggestedCalendar,
+                            color: DesignSystem.Colors.primaryCoral
+                        )
+                        BadgeCapybara(
+                            icon: "checklist",
+                            text: event.suggestedReminderList,
+                            color: DesignSystem.Colors.accentWater
+                        )
+                    }
+
+                    // Confidence warning
+                    if event.confidence < 0.8 {
+                        HStack(spacing: 8) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .font(.system(size: 13))
+                            Text("识别置信度较低，请检查信息是否准确")
+                                .font(.system(size: 12))
+                        }
+                        .foregroundColor(DesignSystem.Colors.primaryCoral)
+                        .padding(10)
+                        .background(DesignSystem.Colors.primaryCoral.opacity(0.1))
+                        .cornerRadius(DesignSystem.CornerRadius.small)
                     }
                 }
-            }
 
-            Spacer()
+                Spacer()
+            }
+            .padding(20)
+            .background(DesignSystem.Colors.surfacePearl)
+            .cornerRadius(DesignSystem.CornerRadius.extraLarge)
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.extraLarge)
+                    .stroke(
+                        isSelected ? DesignSystem.Colors.successGreen : Color.clear,
+                        lineWidth: 3
+                    )
+            )
+            .shadow(
+                color: isSelected ? DesignSystem.Colors.successGreen.opacity(0.2) : DesignSystem.Colors.shadowWarm,
+                radius: isSelected ? 16 : 8,
+                x: 0,
+                y: isSelected ? 6 : 3
+            )
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(isSelected ? Color.blue.opacity(0.1) : Color.gray.opacity(0.05))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 2)
-        )
+        .buttonStyle(.plain)
     }
 
     private func formatDate(_ date: Date) -> String {
@@ -201,9 +260,9 @@ struct CategoryBadge: View {
         .font(.caption)
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
-        .background(Color.blue.opacity(0.1))
-        .foregroundColor(.blue)
-        .cornerRadius(4)
+        .background(DesignSystem.Colors.primaryCoral.opacity(0.1))
+        .foregroundColor(DesignSystem.Colors.primaryCoral)
+        .cornerRadius(DesignSystem.CornerRadius.small)
     }
 }
 
