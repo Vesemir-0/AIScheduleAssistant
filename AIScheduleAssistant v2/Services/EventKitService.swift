@@ -40,31 +40,43 @@ class EventKitService {
 
     // MARK: - Main API
 
-    func createEvent(_ parsed: ParsedEvent) async throws -> (EKEvent, EKReminder) {
+    func createEvent(_ parsed: ParsedEvent) async throws -> (EKEvent?, EKReminder?) {
         // Check permissions
         let calendarStatus = EKEventStore.authorizationStatus(for: .event)
         let reminderStatus = EKEventStore.authorizationStatus(for: .reminder)
 
-        guard calendarStatus == .fullAccess || calendarStatus == .writeOnly else {
-            throw EventKitError.permissionDenied
+        // Get save target from settings
+        let saveTarget = ConfigService.shared.settings.saveTarget
+
+        // Validate permissions based on save target
+        if saveTarget == .both || saveTarget == .calendarOnly {
+            guard calendarStatus == .fullAccess || calendarStatus == .writeOnly else {
+                throw EventKitError.permissionDenied
+            }
         }
 
-        guard reminderStatus == .fullAccess else {
-            throw EventKitError.permissionDenied
+        if saveTarget == .both || saveTarget == .reminderOnly {
+            guard reminderStatus == .fullAccess else {
+                throw EventKitError.permissionDenied
+            }
         }
 
         // Generate link ID for association
         let linkID = UUID().uuidString
 
-        // Create calendar event
-        let event = try await createCalendarEvent(parsed, linkID: linkID)
+        // Create calendar event if needed
+        var event: EKEvent? = nil
+        if saveTarget == .both || saveTarget == .calendarOnly {
+            event = try await createCalendarEvent(parsed, linkID: linkID)
+        }
 
-        // For events with duration (startDate != endDate), create two reminders
-        // Otherwise create one reminder
-        let startReminder = try await createReminder(parsed, linkID: linkID, isStartReminder: true)
+        // Create reminder if needed
+        var reminder: EKReminder? = nil
+        if saveTarget == .both || saveTarget == .reminderOnly {
+            reminder = try await createReminder(parsed, linkID: linkID, isStartReminder: true)
+        }
 
-        // Return the start reminder as the primary one
-        return (event, startReminder)
+        return (event, reminder)
     }
 
     // MARK: - Calendar Event Creation
@@ -282,7 +294,7 @@ class EventKitService {
 
     private func canSaveReminders(to calendar: EKCalendar) -> Bool {
         // Check if the calendar's source allows modifications
-        guard let source = calendar.source else { return false }
+        guard calendar.source != nil else { return false }
         return calendar.allowsContentModifications
     }
 

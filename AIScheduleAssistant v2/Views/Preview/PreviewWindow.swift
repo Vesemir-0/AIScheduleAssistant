@@ -61,6 +61,17 @@ struct PreviewWindow: View {
 
             // Footer
             HStack {
+                Button(allSelected ? "全不选" : "全选") {
+                    if allSelected {
+                        selectedEventIndices.removeAll()
+                    } else {
+                        selectedEventIndices = Set(events.indices)
+                    }
+                }
+                .buttonStyle(.bordered)
+
+                Spacer()
+
                 Text("\(selectedEventIndices.count) / \(events.count) 个事件已选择")
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -87,6 +98,10 @@ struct PreviewWindow: View {
             // Select all events by default
             selectedEventIndices = Set(events.indices)
         }
+    }
+
+    private var allSelected: Bool {
+        selectedEventIndices.count == events.count && !events.isEmpty
     }
 }
 

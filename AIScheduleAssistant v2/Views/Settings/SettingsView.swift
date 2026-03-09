@@ -36,39 +36,45 @@ struct AIConfigView: View {
     var body: some View {
         Form {
             Section("API 配置") {
-                LabeledContent("API 端点") {
+                HStack(alignment: .center) {
+                    Text("API 端点")
+                        .frame(width: 100, alignment: .trailing)
                     TextField("https://api.openai.com/v1", text: $configService.settings.aiConfig.baseURL)
                         .textFieldStyle(.roundedBorder)
-                        .frame(width: 350)
                 }
 
-                LabeledContent("API Key") {
+                HStack(alignment: .center) {
+                    Text("API Key")
+                        .frame(width: 100, alignment: .trailing)
                     SecureField("输入 API Key", text: $configService.settings.aiConfig.apiKey)
                         .textFieldStyle(.roundedBorder)
-                        .frame(width: 350)
                 }
 
-                LabeledContent("模型名称") {
+                HStack(alignment: .center) {
+                    Text("模型名称")
+                        .frame(width: 100, alignment: .trailing)
                     TextField("gpt-4", text: $configService.settings.aiConfig.model)
                         .textFieldStyle(.roundedBorder)
-                        .frame(width: 350)
                 }
             }
 
             Section("模型参数") {
-                LabeledContent("Temperature") {
-                    HStack {
-                        Slider(value: $configService.settings.aiConfig.temperature, in: 0...2, step: 0.1)
-                            .frame(width: 250)
-                        Text(String(format: "%.1f", configService.settings.aiConfig.temperature))
-                            .frame(width: 40, alignment: .trailing)
-                    }
+                HStack(alignment: .center) {
+                    Text("Temperature")
+                        .frame(width: 100, alignment: .trailing)
+                    Slider(value: $configService.settings.aiConfig.temperature, in: 0...2, step: 0.1)
+                    Text(String(format: "%.1f", configService.settings.aiConfig.temperature))
+                        .frame(width: 40, alignment: .trailing)
+                        .monospacedDigit()
                 }
 
-                LabeledContent("Max Tokens") {
-                    TextField("1000", value: $configService.settings.aiConfig.maxTokens, format: .number)
+                HStack(alignment: .center) {
+                    Text("Max Tokens")
+                        .frame(width: 100, alignment: .trailing)
+                    TextField("4000", value: $configService.settings.aiConfig.maxTokens, format: .number)
                         .textFieldStyle(.roundedBorder)
                         .frame(width: 100)
+                    Spacer()
                 }
             }
 
@@ -113,20 +119,39 @@ struct BehaviorSettingsView: View {
                     .foregroundColor(.secondary)
             }
 
+            Section("保存选项") {
+                Picker("保存到", selection: $configService.settings.saveTarget) {
+                    Text("日历和待办清单").tag(SaveTarget.both)
+                    Text("仅日历").tag(SaveTarget.calendarOnly)
+                    Text("仅待办清单").tag(SaveTarget.reminderOnly)
+                }
+                .pickerStyle(.radioGroup)
+
+                Text("选择 AI 识别的事件保存到哪里")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
             Section("功能开关") {
                 Toggle("启用截图功能", isOn: $configService.settings.enableScreenshotCapture)
                 Toggle("启用文本选择功能", isOn: $configService.settings.enableTextCapture)
             }
 
             Section("快捷键") {
-                LabeledContent("截图") {
+                HStack {
+                    Text("截图")
+                        .frame(width: 100, alignment: .trailing)
                     Text("待实现")
                         .foregroundColor(.secondary)
+                    Spacer()
                 }
 
-                LabeledContent("文本选择") {
+                HStack {
+                    Text("文本选择")
+                        .frame(width: 100, alignment: .trailing)
                     Text("待实现")
                         .foregroundColor(.secondary)
+                    Spacer()
                 }
             }
 
