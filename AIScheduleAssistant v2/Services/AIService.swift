@@ -407,10 +407,10 @@ class AIService {
         struct AIEvent: Codable {
             let title: String
             let description: String?
-            let startDate: String
+            let startDate: String?  // Make optional
             let endDate: String?
             let isAllDay: Bool
-            let dueDate: String?  // Make optional
+            let dueDate: String?
             let priority: Int
             let suggestedCalendar: String
             let suggestedReminderList: String
@@ -425,8 +425,21 @@ class AIService {
         formatter.formatOptions = [.withInternetDateTime, .withColonSeparatorInTimeZone]
 
         return try aiResponse.events.map { aiEvent in
-            guard let startDate = formatter.date(from: aiEvent.startDate) else {
-                throw AIError.parseFailed("无法解析开始日期: \(aiEvent.startDate)")
+            // Handle events with only dueDate (no startDate)
+            let startDate: Date
+            if let startDateString = aiEvent.startDate {
+                guard let parsedStartDate = formatter.date(from: startDateString) else {
+                    throw AIError.parseFailed("无法解析开始日期: \(startDateString)")
+                }
+                startDate = parsedStartDate
+            } else if let dueDateString = aiEvent.dueDate {
+                // If no startDate, use dueDate as startDate
+                guard let parsedDueDate = formatter.date(from: dueDateString) else {
+                    throw AIError.parseFailed("无法解析截止日期: \(dueDateString)")
+                }
+                startDate = parsedDueDate
+            } else {
+                throw AIError.parseFailed("事件缺少开始日期和截止日期")
             }
 
             let endDate = aiEvent.endDate.flatMap { formatter.date(from: $0) }
@@ -460,10 +473,10 @@ class AIService {
     // MARK: - Helper Methods
 
     private func getExistingCalendars() -> [String] {
-        return eventStore.calendars(for: .event).map { $0.title }
+        return EventKitService.shared.getCalendars().map { $0.title }
     }
 
     private func getExistingReminderLists() -> [String] {
-        return eventStore.calendars(for: .reminder).map { $0.title }
+        return EventKitService.shared.getReminderLists().map { $0.title }
     }
 }
