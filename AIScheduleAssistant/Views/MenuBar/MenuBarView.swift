@@ -54,7 +54,11 @@ struct MenuBarView: View {
                     subtitle: "轻松捕捉屏幕信息",
                     iconColor: DesignSystem.Colors.accentWater
                 ) {
+                    // 关闭菜单以避免遮挡截图
+                    appDelegate?.closePopover()
+                    // 延迟一小段时间确保菜单已关闭
                     Task {
+                        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1秒
                         await viewModel.captureScreenshot()
                     }
                 }

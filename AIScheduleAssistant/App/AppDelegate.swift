@@ -58,6 +58,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    func closePopover() {
+        popover?.performClose(nil)
+    }
+
     private func checkAndShowWelcome() {
         let hasShownWelcome = UserDefaults.standard.bool(forKey: "hasShownWelcome")
 

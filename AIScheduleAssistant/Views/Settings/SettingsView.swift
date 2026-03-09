@@ -17,12 +17,12 @@ struct SettingsView: View {
 
             BehaviorSettingsView()
                 .tabItem {
-                    Label("行为设置", systemImage: "gearshape.2")
+                    Label("行为设置", systemImage: "gearshape.fill")
                 }
 
             PermissionsView()
                 .tabItem {
-                    Label("权限管理", systemImage: "lock.shield")
+                    Label("权限管理", systemImage: "lock.shield.fill")
                 }
         }
         .frame(width: 700, height: 580)
@@ -39,18 +39,10 @@ struct AIConfigView: View {
             VStack(spacing: 28) {
                 // Header
                 VStack(spacing: 12) {
-                    Image(systemName: "brain.head.profile")
-                        .font(.system(size: 52))
-                        .foregroundStyle(
-                            LinearGradient(
-                                colors: [
-                                    DesignSystem.Colors.primaryCoral,
-                                    DesignSystem.Colors.accentWater
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
+                    Image("SettingsIcon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 52, height: 52)
 
                     Text("AI 配置中心")
                         .font(.system(size: 24, weight: .bold))
@@ -175,18 +167,10 @@ struct BehaviorSettingsView: View {
             VStack(spacing: 28) {
                 // Header
                 VStack(spacing: 12) {
-                    Image(systemName: "gearshape.2")
-                        .font(.system(size: 52))
-                        .foregroundStyle(
-                            LinearGradient(
-                                colors: [
-                                    DesignSystem.Colors.successGreen,
-                                    DesignSystem.Colors.accentWater
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
+                    Image("SettingsIcon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 52, height: 52)
 
                     Text("行为设置")
                         .font(.system(size: 24, weight: .bold))
@@ -304,18 +288,10 @@ struct PermissionsView: View {
             VStack(spacing: 28) {
                 // Header
                 VStack(spacing: 12) {
-                    Image(systemName: "lock.shield")
-                        .font(.system(size: 52))
-                        .foregroundStyle(
-                            LinearGradient(
-                                colors: [
-                                    DesignSystem.Colors.primaryCoral,
-                                    DesignSystem.Colors.successGreen
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
+                    Image("SettingsIcon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 52, height: 52)
 
                     Text("权限管理")
                         .font(.system(size: 24, weight: .bold))
