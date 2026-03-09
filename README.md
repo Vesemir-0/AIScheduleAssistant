@@ -7,19 +7,19 @@ An intelligent macOS menu bar application that uses AI to recognize schedule inf
 ## Features
 
 - 📸 **Screenshot Recognition**: Capture screenshots and let AI extract schedule information
-- 📝 **Text Selection**: Select text anywhere and convert it to calendar events
+- ⌨️ **Text Input**: Manually input or paste text containing schedule information
 - 🤖 **AI-Powered**: Uses OpenAI-compatible APIs for intelligent parsing
-- 📅 **Dual Creation**: Automatically creates both calendar events and reminders
+- 📅 **Flexible Saving**: Choose to save to Calendar only, Reminders only, or both
 - 🏷️ **Smart Categorization**: AI matches existing categories or creates new ones
 - ⚙️ **Flexible Configuration**: Support for any OpenAI-compatible API service
 - 🔒 **Privacy First**: All processing happens locally, API keys stored securely in Keychain
+- ⚡ **Auto-Add Mode**: Optional mode to skip preview and add events automatically
 
 ## Requirements
 
-- macOS 13.0 or later
+- macOS 14.6 or later
 - System permissions:
   - Screen Recording (for screenshots)
-  - Accessibility (for text selection)
   - Calendar
   - Reminders
 
@@ -61,15 +61,22 @@ Any service with OpenAI-compatible API:
 2. Select "Screenshot Capture"
 3. Select the area to capture
 4. AI will analyze and show recognized events
-5. Review and confirm to add to Calendar and Reminders
+5. Review and confirm to add to Calendar and/or Reminders
 
-### Text Selection
+### Text Input
 
-1. Select text containing schedule information in any app
-2. Click the menu bar icon
-3. Select "Capture Selected Text"
-4. AI will analyze and show recognized events
+1. Click the menu bar icon
+2. Select "Text Input"
+3. Type or paste text containing schedule information
+4. Click "Process" to analyze
 5. Review and confirm to add
+
+### Save Target Options
+
+Configure where events are saved in Settings > Behavior Settings:
+- **Calendar and Reminders**: Save to both (default)
+- **Calendar Only**: Only create calendar events
+- **Reminders Only**: Only create reminder items
 
 ### Auto-Add Mode
 
@@ -77,14 +84,14 @@ Enable in Settings > Behavior Settings to skip the preview step and add events a
 
 ## How It Works
 
-1. **Content Capture**: Screenshot or text selection
+1. **Content Capture**: Screenshot or text input
 2. **AI Analysis**: Sends to configured AI service with current date/time and existing categories
 3. **Event Parsing**: AI returns structured JSON with:
    - Event title and description
    - Start/end dates (ISO 8601 format)
    - Suggested categories
    - Priority level
-4. **Dual Creation**: Creates both calendar event and reminder with linked IDs
+4. **Smart Saving**: Creates calendar events and/or reminders based on your save target preference
 5. **Smart Categorization**: Matches existing categories or creates new ones following broad category principles
 
 ## Privacy & Security
@@ -102,7 +109,7 @@ Enable in Settings > Behavior Settings to skip the preview step and add events a
 ```bash
 git clone https://github.com/Vesemir-0/AIScheduleAssistant.git
 cd AIScheduleAssistant
-open "AIScheduleAssistant v2.xcodeproj"
+open "AIScheduleAssistant.xcodeproj"
 ```
 
 ### Project Structure

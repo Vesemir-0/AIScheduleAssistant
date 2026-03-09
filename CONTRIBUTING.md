@@ -52,15 +52,15 @@ Feature suggestions are welcome! Please create an issue with:
 ## Development Setup
 
 ### Prerequisites
-- macOS 13.0 or later
-- Xcode 14.0 or later
-- Swift 5.7 or later
+- macOS 14.6 or later
+- Xcode 16.0 or later
+- Swift 5.0 or later
 
 ### Building the Project
 ```bash
 git clone https://github.com/Vesemir-0/AIScheduleAssistant.git
 cd AIScheduleAssistant
-open "AIScheduleAssistant v2.xcodeproj"
+open "AIScheduleAssistant.xcodeproj"
 ```
 
 ### Project Structure

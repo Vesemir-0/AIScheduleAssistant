@@ -10,7 +10,7 @@
    - 确保在主线程更新 UI
 
 2. **PermissionManager 优化**：
-   - 辅助功能权限请求后立即更新状态
+   - 屏幕录制权限请求后立即更新状态
    - 添加延迟检查机制
 
 ### 测试步骤
@@ -23,7 +23,7 @@
 3. 点击"请求权限"按钮
 
 **预期结果**：
-- 弹出系统对话框："AIScheduleAssistant v2 想要访问您的日历"
+- 弹出系统对话框："AIScheduleAssistant 想要访问您的日历"
 - 点击"好"授权
 - 权限状态应该变为绿色 ✅
 
@@ -39,15 +39,15 @@
 3. 点击"请求权限"按钮
 
 **预期结果**：
-- 弹出系统对话框："AIScheduleAssistant v2 想要访问您的提醒事项"
+- 弹出系统对话框："AIScheduleAssistant 想要访问您的提醒事项"
 - 点击"好"授权
 - 权限状态应该变为绿色 ✅
 
-#### 3. 测试辅助功能权限
+#### 3. 测试屏幕录制权限
 
 **操作**：
 1. 在权限管理页面
-2. 找到"辅助功能权限"行
+2. 找到"屏幕录制权限"行
 3. 点击"请求权限"按钮
 
 **预期结果**：
@@ -95,13 +95,12 @@ Reminders permission error: ...
 
 ```bash
 # 重置所有权限
-tccutil reset All com.yourcompany.AIScheduleAssistant-v2
+tccutil reset All hp.AIScheduleAssistant
 
 # 或者重置特定权限
-tccutil reset Calendar com.yourcompany.AIScheduleAssistant-v2
-tccutil reset Reminders com.yourcompany.AIScheduleAssistant-v2
-tccutil reset Accessibility com.yourcompany.AIScheduleAssistant-v2
-tccutil reset ScreenCapture com.yourcompany.AIScheduleAssistant-v2
+tccutil reset Calendar hp.AIScheduleAssistant
+tccutil reset Reminders hp.AIScheduleAssistant
+tccutil reset ScreenCapture hp.AIScheduleAssistant
 ```
 
 **注意**：重置后需要重启应用。
@@ -126,7 +125,7 @@ tccutil reset ScreenCapture com.yourcompany.AIScheduleAssistant-v2
 2. 应用没有正确的权限描述
 
 **解决方法**：
-- 确保 macOS 版本 >= 13.0
+- 确保 macOS 版本 >= 14.6
 - 检查 Info.plist 是否包含权限描述（见下文）
 
 #### Q3: 授权后状态还是红色
@@ -151,8 +150,7 @@ tccutil reset ScreenCapture com.yourcompany.AIScheduleAssistant-v2
 <key>NSRemindersUsageDescription</key>
 <string>需要访问提醒事项以创建待办事项</string>
 
-<key>NSAppleEventsUsageDescription</key>
-<string>需要辅助功能权限以读取选中的文本</string>
+<string>需要屏幕录制权限以读取选中的文本</string>
 ```
 
 ### 验证清单
@@ -163,8 +161,8 @@ tccutil reset ScreenCapture com.yourcompany.AIScheduleAssistant-v2
 - [ ] 日历权限授予后状态变为绿色
 - [ ] 提醒事项权限可以请求
 - [ ] 提醒事项权限授予后状态变为绿色
-- [ ] 辅助功能权限可以打开系统设置
-- [ ] 辅助功能权限授予后状态变为绿色
+- [ ] 屏幕录制权限可以打开系统设置
+- [ ] 屏幕录制权限授予后状态变为绿色
 - [ ] 屏幕录制权限可以打开系统设置
 - [ ] 屏幕录制权限授予后状态变为绿色
 - [ ] "刷新状态"按钮可以手动更新所有权限状态
@@ -173,7 +171,7 @@ tccutil reset ScreenCapture com.yourcompany.AIScheduleAssistant-v2
 
 如果所有权限都正常授予：
 1. 测试截图功能
-2. 测试文本选择功能
+2. 测试文本输入功能
 3. 配置 AI API
 4. 进行完整的功能测试
 
