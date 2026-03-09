@@ -24,7 +24,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         if let button = statusItem?.button {
-            button.image = NSImage(systemSymbolName: "calendar.badge.plus", accessibilityDescription: "AI Schedule Assistant")
+            // Use custom menu bar icon
+            if let image = NSImage(named: "MenuBarIcon") {
+                image.isTemplate = true  // Makes it adapt to light/dark mode
+                button.image = image
+            } else {
+                // Fallback to system icon if custom icon not found
+                button.image = NSImage(systemSymbolName: "calendar.badge.plus", accessibilityDescription: "AI Schedule Assistant")
+            }
             button.action = #selector(togglePopover)
             button.target = self
         }
