@@ -12,12 +12,12 @@ struct SettingsView: View {
         TabView {
             AIConfigView()
                 .tabItem {
-                    Label("AI 配置", systemImage: "brain")
+                    Label("AI 配置", systemImage: "brain.head.profile")
                 }
 
             BehaviorSettingsView()
                 .tabItem {
-                    Label("行为设置", systemImage: "slider.horizontal.3")
+                    Label("行为设置", systemImage: "gearshape.2")
                 }
 
             PermissionsView()
@@ -25,7 +25,7 @@ struct SettingsView: View {
                     Label("权限管理", systemImage: "lock.shield")
                 }
         }
-        .frame(width: 600, height: 500)
+        .frame(width: 650, height: 520)
     }
 }
 
@@ -34,76 +34,120 @@ struct AIConfigView: View {
     @State private var validationErrors: [String] = []
 
     var body: some View {
-        Form {
-            Section("API 配置") {
-                HStack(alignment: .center) {
-                    Text("API 端点")
-                        .frame(width: 100, alignment: .trailing)
-                    TextField("https://api.openai.com/v1", text: $configService.settings.aiConfig.baseURL)
-                        .textFieldStyle(.roundedBorder)
+        ScrollView {
+            VStack(spacing: 24) {
+                // Header
+                VStack(spacing: 8) {
+                    Image(systemName: "brain.head.profile")
+                        .font(.system(size: 40))
+                        .foregroundStyle(.blue.gradient)
+
+                    Text("AI 配置")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+
+                    Text("配置 AI 模型和参数")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.top, 20)
+
+                // API Configuration Section
+                VStack(alignment: .leading, spacing: 16) {
+                    SectionHeader(title: "API 配置", icon: "network")
+
+                    VStack(spacing: 12) {
+                        SettingRow(label: "API 端点") {
+                            TextField("https://api.openai.com/v1", text: $configService.settings.aiConfig.baseURL)
+                                .textFieldStyle(CustomTextFieldStyle())
+                        }
+
+                        SettingRow(label: "API Key") {
+                            SecureField("输入 API Key", text: $configService.settings.aiConfig.apiKey)
+                                .textFieldStyle(CustomTextFieldStyle())
+                        }
+
+                        SettingRow(label: "模型名称") {
+                            TextField("gpt-4", text: $configService.settings.aiConfig.model)
+                                .textFieldStyle(CustomTextFieldStyle())
+                        }
+                    }
+                    .padding(16)
+                    .background(Color(nsColor: .controlBackgroundColor))
+                    .cornerRadius(12)
                 }
 
-                HStack(alignment: .center) {
-                    Text("API Key")
-                        .frame(width: 100, alignment: .trailing)
-                    SecureField("输入 API Key", text: $configService.settings.aiConfig.apiKey)
-                        .textFieldStyle(.roundedBorder)
+                // Model Parameters Section
+                VStack(alignment: .leading, spacing: 16) {
+                    SectionHeader(title: "模型参数", icon: "slider.horizontal.3")
+
+                    VStack(spacing: 16) {
+                        SettingRow(label: "Temperature") {
+                            HStack(spacing: 12) {
+                                Slider(value: $configService.settings.aiConfig.temperature, in: 0...2, step: 0.1)
+                                    .tint(.blue)
+
+                                Text(String(format: "%.1f", configService.settings.aiConfig.temperature))
+                                    .font(.system(.body, design: .monospaced))
+                                    .foregroundColor(.secondary)
+                                    .frame(width: 40, alignment: .trailing)
+                            }
+                        }
+
+                        SettingRow(label: "Max Tokens") {
+                            TextField("4000", value: $configService.settings.aiConfig.maxTokens, format: .number)
+                                .textFieldStyle(CustomTextFieldStyle())
+                                .frame(width: 120)
+                        }
+                    }
+                    .padding(16)
+                    .background(Color(nsColor: .controlBackgroundColor))
+                    .cornerRadius(12)
                 }
 
-                HStack(alignment: .center) {
-                    Text("模型名称")
-                        .frame(width: 100, alignment: .trailing)
-                    TextField("gpt-4", text: $configService.settings.aiConfig.model)
-                        .textFieldStyle(.roundedBorder)
-                }
-            }
-
-            Section("模型参数") {
-                HStack(alignment: .center) {
-                    Text("Temperature")
-                        .frame(width: 100, alignment: .trailing)
-                    Slider(value: $configService.settings.aiConfig.temperature, in: 0...2, step: 0.1)
-                    Text(String(format: "%.1f", configService.settings.aiConfig.temperature))
-                        .frame(width: 40, alignment: .trailing)
-                        .monospacedDigit()
-                }
-
-                HStack(alignment: .center) {
-                    Text("Max Tokens")
-                        .frame(width: 100, alignment: .trailing)
-                    TextField("4000", value: $configService.settings.aiConfig.maxTokens, format: .number)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 100)
-                    Spacer()
-                }
-            }
-
-            if !validationErrors.isEmpty {
-                Section("验证错误") {
-                    ForEach(validationErrors, id: \.self) { error in
-                        Label(error, systemImage: "exclamationmark.triangle.fill")
-                            .foregroundColor(.red)
+                // Validation Errors
+                if !validationErrors.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(validationErrors, id: \.self) { error in
+                            HStack(spacing: 8) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundColor(.orange)
+                                Text(error)
+                                    .font(.subheadline)
+                            }
+                            .padding(12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.orange.opacity(0.1))
+                            .cornerRadius(8)
+                        }
                     }
                 }
-            }
 
-            HStack {
-                Button("恢复默认") {
-                    configService.resetToDefaults()
-                }
-
-                Spacer()
-
-                Button("保存") {
-                    validationErrors = configService.validateConfig()
-                    if validationErrors.isEmpty {
-                        configService.saveSettings()
+                // Action Buttons
+                HStack(spacing: 12) {
+                    Button(action: {
+                        configService.resetToDefaults()
+                    }) {
+                        Label("恢复默认", systemImage: "arrow.counterclockwise")
+                            .frame(maxWidth: .infinity)
                     }
+                    .buttonStyle(SecondaryButtonStyle())
+
+                    Button(action: {
+                        validationErrors = configService.validateConfig()
+                        if validationErrors.isEmpty {
+                            configService.saveSettings()
+                        }
+                    }) {
+                        Label("保存设置", systemImage: "checkmark.circle.fill")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
                 }
-                .buttonStyle(.borderedProminent)
+                .padding(.bottom, 20)
             }
+            .padding(.horizontal, 24)
         }
-        .padding()
     }
 }
 
@@ -111,59 +155,120 @@ struct BehaviorSettingsView: View {
     @ObservedObject private var configService = ConfigService.shared
 
     var body: some View {
-        Form {
-            Section("添加模式") {
-                Toggle("自动添加（无需预览确认）", isOn: $configService.settings.autoAddMode)
-                Text("关闭后，AI 识别内容后会显示预览窗口供您确认")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
+        ScrollView {
+            VStack(spacing: 24) {
+                // Header
+                VStack(spacing: 8) {
+                    Image(systemName: "gearshape.2")
+                        .font(.system(size: 40))
+                        .foregroundStyle(.purple.gradient)
 
-            Section("保存选项") {
-                Picker("保存到", selection: $configService.settings.saveTarget) {
-                    Text("日历和待办清单").tag(SaveTarget.both)
-                    Text("仅日历").tag(SaveTarget.calendarOnly)
-                    Text("仅待办清单").tag(SaveTarget.reminderOnly)
-                }
-                .pickerStyle(.radioGroup)
+                    Text("行为设置")
+                        .font(.title2)
+                        .fontWeight(.semibold)
 
-                Text("选择 AI 识别的事件保存到哪里")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-
-            Section("功能开关") {
-                Toggle("启用截图功能", isOn: $configService.settings.enableScreenshotCapture)
-                Toggle("启用文本选择功能", isOn: $configService.settings.enableTextCapture)
-            }
-
-            Section("快捷键") {
-                HStack {
-                    Text("截图")
-                        .frame(width: 100, alignment: .trailing)
-                    Text("待实现")
+                    Text("自定义应用行为和保存选项")
+                        .font(.subheadline)
                         .foregroundColor(.secondary)
-                    Spacer()
+                }
+                .padding(.top, 20)
+
+                // Add Mode Section
+                VStack(alignment: .leading, spacing: 16) {
+                    SectionHeader(title: "添加模式", icon: "plus.circle")
+
+                    VStack(spacing: 12) {
+                        Toggle(isOn: $configService.settings.autoAddMode) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("自动添加")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Text("无需预览确认，直接添加到日历")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .toggleStyle(SwitchToggleStyle(tint: .blue))
+                    }
+                    .padding(16)
+                    .background(Color(nsColor: .controlBackgroundColor))
+                    .cornerRadius(12)
                 }
 
-                HStack {
-                    Text("文本选择")
-                        .frame(width: 100, alignment: .trailing)
-                    Text("待实现")
-                        .foregroundColor(.secondary)
-                    Spacer()
-                }
-            }
+                // Save Target Section
+                VStack(alignment: .leading, spacing: 16) {
+                    SectionHeader(title: "保存选项", icon: "square.and.arrow.down")
 
-            HStack {
-                Spacer()
-                Button("保存") {
+                    VStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            ForEach([
+                                (SaveTarget.both, "日历和待办清单", "同时保存到日历和待办清单"),
+                                (SaveTarget.calendarOnly, "仅日历", "只保存到日历应用"),
+                                (SaveTarget.reminderOnly, "仅待办清单", "只保存到提醒事项")
+                            ], id: \.0) { target, title, description in
+                                RadioOption(
+                                    isSelected: configService.settings.saveTarget == target,
+                                    title: title,
+                                    description: description
+                                ) {
+                                    configService.settings.saveTarget = target
+                                }
+                            }
+                        }
+                    }
+                    .padding(16)
+                    .background(Color(nsColor: .controlBackgroundColor))
+                    .cornerRadius(12)
+                }
+
+                // Feature Toggles Section
+                VStack(alignment: .leading, spacing: 16) {
+                    SectionHeader(title: "功能开关", icon: "switch.2")
+
+                    VStack(spacing: 12) {
+                        Toggle(isOn: $configService.settings.enableScreenshotCapture) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("启用截图功能")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Text("通过截图识别日程信息")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .toggleStyle(SwitchToggleStyle(tint: .blue))
+
+                        Divider()
+
+                        Toggle(isOn: $configService.settings.enableTextCapture) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("启用文本选择功能")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Text("通过选中文本识别日程信息")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .toggleStyle(SwitchToggleStyle(tint: .blue))
+                    }
+                    .padding(16)
+                    .background(Color(nsColor: .controlBackgroundColor))
+                    .cornerRadius(12)
+                }
+
+                // Save Button
+                Button(action: {
                     configService.saveSettings()
+                }) {
+                    Label("保存设置", systemImage: "checkmark.circle.fill")
+                        .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.bottom, 20)
             }
+            .padding(.horizontal, 24)
         }
-        .padding()
     }
 }
 
@@ -352,6 +457,127 @@ struct PermissionRow: View {
         Text(status == .granted ? "已授权" : "未授权")
             .font(.subheadline)
             .foregroundColor(status == .granted ? .green : .red)
+    }
+}
+
+// MARK: - Custom Components
+
+struct SectionHeader: View {
+    let title: String
+    let icon: String
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(.blue)
+
+            Text(title)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(.primary)
+
+            Spacer()
+        }
+    }
+}
+
+struct SettingRow<Content: View>: View {
+    let label: String
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(label)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+
+            content()
+        }
+    }
+}
+
+struct RadioOption: View {
+    let isSelected: Bool
+    let title: String
+    let description: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 12) {
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 20))
+                    .foregroundColor(isSelected ? .blue : .secondary)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .foregroundColor(.primary)
+
+                    Text(description)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
+            }
+            .padding(12)
+            .background(isSelected ? Color.blue.opacity(0.08) : Color.clear)
+            .cornerRadius(8)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Custom Styles
+
+struct CustomTextFieldStyle: TextFieldStyle {
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        configuration
+            .padding(8)
+            .background(Color(nsColor: .textBackgroundColor))
+            .cornerRadius(6)
+            .overlay(
+                RoundedRectangle(cornerRadius: 6)
+                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+            )
+    }
+}
+
+struct PrimaryButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.body.weight(.medium))
+            .foregroundColor(.white)
+            .padding(.vertical, 10)
+            .padding(.horizontal, 20)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(configuration.isPressed ? Color.blue.opacity(0.8) : Color.blue)
+            )
+            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+    }
+}
+
+struct SecondaryButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.body.weight(.medium))
+            .foregroundColor(.primary)
+            .padding(.vertical, 10)
+            .padding(.horizontal, 20)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color(nsColor: .controlBackgroundColor))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+            )
+            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
