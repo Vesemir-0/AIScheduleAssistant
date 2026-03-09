@@ -96,3 +96,7 @@ iOSInjectionProject/
 task_plan.md
 findings.md
 progress.md
+release/
+build/
+*.dmg
+*.zip
