@@ -25,7 +25,7 @@
 
 ## 安装
 
-1. 从 [Releases](https://github.com/yourusername/AIScheduleAssistant/releases) 下载最新版本
+1. 从 [Releases](https://github.com/Vesemir-0/AIScheduleAssistant/releases) 下载最新版本
 2. 将应用移动到应用程序文件夹
 3. 启动应用 - 它会出现在菜单栏中
 4. 根据提示授予必要的权限
@@ -42,7 +42,7 @@
    - **API Key**：你的 API 密钥
    - **模型名称**：要使用的模型（如 `gpt-4`、`claude-3-opus`）
    - **Temperature**：0-2（默认：0.7）
-   - **Max Tokens**：最大响应长度（默认：1000）
+   - **Max Tokens**：最大响应长度（默认：4000）
 
 ### 支持的 AI 服务
 
@@ -100,7 +100,7 @@
 ### 从源码构建
 
 ```bash
-git clone https://github.com/yourusername/AIScheduleAssistant.git
+git clone https://github.com/Vesemir-0/AIScheduleAssistant.git
 cd AIScheduleAssistant
 open "AIScheduleAssistant v2.xcodeproj"
 ```
@@ -143,9 +143,9 @@ AIScheduleAssistant/
 
 ## 支持
 
-- 🐛 [报告问题](https://github.com/yourusername/AIScheduleAssistant/issues)
-- 💡 [功能请求](https://github.com/yourusername/AIScheduleAssistant/issues)
-- 📖 [文档](https://github.com/yourusername/AIScheduleAssistant/wiki)
+- 🐛 [报告问题](https://github.com/Vesemir-0/AIScheduleAssistant/issues)
+- 💡 [功能请求](https://github.com/Vesemir-0/AIScheduleAssistant/issues)
+- 📖 [文档](https://github.com/Vesemir-0/AIScheduleAssistant/wiki)
 
 ---
 

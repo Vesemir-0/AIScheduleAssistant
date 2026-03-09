@@ -25,7 +25,7 @@ An intelligent macOS menu bar application that uses AI to recognize schedule inf
 
 ## Installation
 
-1. Download the latest release from [Releases](https://github.com/yourusername/AIScheduleAssistant/releases)
+1. Download the latest release from [Releases](https://github.com/Vesemir-0/AIScheduleAssistant/releases)
 2. Move the app to your Applications folder
 3. Launch the app - it will appear in your menu bar
 4. Grant necessary permissions when prompted
@@ -42,7 +42,7 @@ An intelligent macOS menu bar application that uses AI to recognize schedule inf
    - **API Key**: Your API key
    - **Model Name**: Model to use (e.g., `gpt-4`, `claude-3-opus`)
    - **Temperature**: 0-2 (default: 0.7)
-   - **Max Tokens**: Maximum response length (default: 1000)
+   - **Max Tokens**: Maximum response length (default: 4000)
 
 ### Supported AI Services
 
@@ -100,7 +100,7 @@ Enable in Settings > Behavior Settings to skip the preview step and add events a
 ### Building from Source
 
 ```bash
-git clone https://github.com/yourusername/AIScheduleAssistant.git
+git clone https://github.com/Vesemir-0/AIScheduleAssistant.git
 cd AIScheduleAssistant
 open "AIScheduleAssistant v2.xcodeproj"
 ```
@@ -143,9 +143,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-- 🐛 [Report Issues](https://github.com/yourusername/AIScheduleAssistant/issues)
-- 💡 [Feature Requests](https://github.com/yourusername/AIScheduleAssistant/issues)
-- 📖 [Documentation](https://github.com/yourusername/AIScheduleAssistant/wiki)
+- 🐛 [Report Issues](https://github.com/Vesemir-0/AIScheduleAssistant/issues)
+- 💡 [Feature Requests](https://github.com/Vesemir-0/AIScheduleAssistant/issues)
+- 📖 [Documentation](https://github.com/Vesemir-0/AIScheduleAssistant/wiki)
 
 ---
 

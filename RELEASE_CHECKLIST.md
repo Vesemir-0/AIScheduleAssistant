@@ -70,7 +70,7 @@ sed -i '' 's/yourusername/yourname/g' CONTRIBUTING.md
 cd "/Users/huangpeng/Downloads/AIScheduleAssistant v2"
 
 # 添加远程仓库（替换为你的实际仓库地址）
-git remote add origin https://github.com/yourusername/AIScheduleAssistant.git
+git remote add origin https://github.com/Vesemir-0/AIScheduleAssistant.git
 
 # 推送代码
 git push -u origin main
@@ -134,7 +134,7 @@ AI Schedule Assistant 是一个智能的 macOS 菜单栏应用，使用 AI 识�
 
 ---
 
-**完整更新日志**: https://github.com/yourusername/AIScheduleAssistant/commits/v1.0.0
+**完整更新日志**: https://github.com/Vesemir-0/AIScheduleAssistant/commits/v1.0.0
 ```
 
 5. 上传编译好的 .app 文件（需要先构建）

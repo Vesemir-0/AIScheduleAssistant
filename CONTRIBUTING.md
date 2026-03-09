@@ -58,7 +58,7 @@ Feature suggestions are welcome! Please create an issue with:
 
 ### Building the Project
 ```bash
-git clone https://github.com/yourusername/AIScheduleAssistant.git
+git clone https://github.com/Vesemir-0/AIScheduleAssistant.git
 cd AIScheduleAssistant
 open "AIScheduleAssistant v2.xcodeproj"
 ```
