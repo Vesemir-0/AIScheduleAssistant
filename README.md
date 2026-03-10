@@ -2,6 +2,9 @@
 
 [English](README.md)
 
+【AIScheduleAssistant，一款免费开源的使用AI从截图或文本中识别日程信息的智能macOS菜单栏应用】 https://www.bilibili.com/video/BV1CZPZzYE9g/?share_source=copy_web&vd_source=e7f291854be2ed6de2c8a06ca5facd2a
+
+
 一个智能的 macOS 菜单栏应用，使用 AI 识别截图或选中文本中的日程信息，自动添加到系统日历和待办清单。
 
 ## 功能特性
