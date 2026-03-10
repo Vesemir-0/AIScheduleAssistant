@@ -2,6 +2,8 @@
 
 [中文文档](README_CN.md)
 
+<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=116203209098721&bvid=BV1CZPZzYE9g&cid=36593471013&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+
 An intelligent macOS menu bar application that uses AI to recognize schedule information from screenshots or selected text, and automatically adds them to your system Calendar and Reminders.
 
 ## Features
