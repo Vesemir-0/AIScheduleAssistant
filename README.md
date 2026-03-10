@@ -2,7 +2,7 @@
 
 [中文文档](README_CN.md)
 
-<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=116203209098721&bvid=BV1CZPZzYE9g&cid=36593471013&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+【AIScheduleAssistant，一款免费开源的使用AI从截图或文本中识别日程信息的智能macOS菜单栏应用】 https://www.bilibili.com/video/BV1CZPZzYE9g/?share_source=copy_web&vd_source=e7f291854be2ed6de2c8a06ca5facd2a
 
 An intelligent macOS menu bar application that uses AI to recognize schedule information from screenshots or selected text, and automatically adds them to your system Calendar and Reminders.
 
