@@ -61,19 +61,16 @@ class EventKitService {
             }
         }
 
-        // Generate link ID for association
-        let linkID = UUID().uuidString
-
         // Create calendar event if needed
         var event: EKEvent? = nil
         if saveTarget == .both || saveTarget == .calendarOnly {
-            event = try await createCalendarEvent(parsed, linkID: linkID)
+            event = try await createCalendarEvent(parsed)
         }
 
         // Create reminder if needed
         var reminder: EKReminder? = nil
         if saveTarget == .both || saveTarget == .reminderOnly {
-            reminder = try await createReminder(parsed, linkID: linkID, isStartReminder: true)
+            reminder = try await createReminder(parsed, isStartReminder: true)
         }
 
         return (event, reminder)
@@ -81,7 +78,7 @@ class EventKitService {
 
     // MARK: - Calendar Event Creation
 
-    private func createCalendarEvent(_ parsed: ParsedEvent, linkID: String) async throws -> EKEvent {
+    private func createCalendarEvent(_ parsed: ParsedEvent) async throws -> EKEvent {
         let event = EKEvent(eventStore: eventStore)
 
         event.title = parsed.title
@@ -89,9 +86,9 @@ class EventKitService {
         event.endDate = parsed.endDate ?? parsed.startDate.addingTimeInterval(3600) // Default 1 hour
         event.isAllDay = parsed.isAllDay
 
-        // Set notes with link ID
+        // Set notes
         let description = parsed.description ?? ""
-        event.notes = "AI_SCHEDULE_LINK:\(linkID)\n\(description)"
+        event.notes = description.isEmpty ? nil : description
 
         // Select or create calendar
         event.calendar = try selectOrCreateCalendar(named: parsed.suggestedCalendar)
@@ -107,7 +104,7 @@ class EventKitService {
 
     // MARK: - Reminder Creation
 
-    private func createReminder(_ parsed: ParsedEvent, linkID: String, isStartReminder: Bool) async throws -> EKReminder {
+    private func createReminder(_ parsed: ParsedEvent, isStartReminder: Bool) async throws -> EKReminder {
         // Check if this is a multi-day duration event (including all-day events)
         let isMultiDay = parsed.endDate != nil &&
                         !Calendar.current.isDate(parsed.startDate, inSameDayAs: parsed.endDate!)
@@ -116,7 +113,6 @@ class EventKitService {
             // Create start reminder for multi-day events
             let startReminder = try await createSingleReminder(
                 parsed: parsed,
-                linkID: linkID,
                 dueDate: parsed.startDate,
                 titleSuffix: "（开始）",
                 isStart: true
@@ -125,7 +121,6 @@ class EventKitService {
             // Create end reminder for multi-day events
             _ = try await createSingleReminder(
                 parsed: parsed,
-                linkID: linkID,
                 dueDate: parsed.endDate!,
                 titleSuffix: "（结束）",
                 isStart: false
@@ -136,7 +131,6 @@ class EventKitService {
             // Single reminder for same-day events
             return try await createSingleReminder(
                 parsed: parsed,
-                linkID: linkID,
                 dueDate: parsed.startDate,  // Use startDate instead of dueDate
                 titleSuffix: nil,
                 isStart: true
@@ -146,7 +140,6 @@ class EventKitService {
 
     private func createSingleReminder(
         parsed: ParsedEvent,
-        linkID: String,
         dueDate: Date,
         titleSuffix: String?,
         isStart: Bool
@@ -179,7 +172,7 @@ class EventKitService {
         // Set priority (EKReminder uses 0-9, where 0 is none, 1-4 is high, 5 is medium, 6-9 is low)
         reminder.priority = parsed.priority
 
-        // Set notes with link ID and time information
+        // Set notes with time information
         let description = parsed.description ?? ""
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
@@ -189,8 +182,7 @@ class EventKitService {
         let startDateStr = dateFormatter.string(from: parsed.startDate)
         let endDateStr = parsed.endDate.map { dateFormatter.string(from: $0) } ?? ""
 
-        var notesContent = "AI_SCHEDULE_LINK:\(linkID)\n"
-        notesContent += "开始时间: \(startDateStr)\n"
+        var notesContent = "开始时间: \(startDateStr)\n"
         if !endDateStr.isEmpty {
             notesContent += "结束时间: \(endDateStr)\n"
         }
